@@ -406,17 +406,24 @@ def exportDisprop(dataname, FL1, FL2, n1, n2, constraints):
     for k in FL1:
         for E in FL1[k]:
             for R in FL1[k][E]:
-                length1 = len(FL1[k][E][R])
+                if type(FL1[k][E][R]) != int:
+                    length1 = len(FL1[k][E][R])
+                else:
+                    length1 = FL1[k][E][R]
                 if k not in FL2 or E not in FL2[k] or R not in FL2[k][E]:
                     F.append({"events": E, "relations": R, "freq1": length1, "freq2": 0,
                     "relSup1": (length1+1)/(n1+1), "relSup2": 0,
                     "disprop": (((length1)+1)/(n1+1))/(1/(n2+1))})
                 else:
-                    length2 = len(FL2[k][E][R])
+                    if type(FL2[k][E][R]) != int:
+                        length2 = len(FL2[k][E][R])
+                    else:
+                        length2 = FL2[k][E][R]
+                    # length2 = FL2[k][E][R]
                     F.append({"events": E, "relations": R, "freq1": length1, "freq2": length2,
                     "relSup1": (length1+1)/(n1+1), "relSup2": (length2+1)/(n2+1),
                     "disprop": ((length1+1)/(n1+1))/((length2+1)/(n2+1))})
-
+    
     with open(filename, "w") as output_file:
         dict_writer = csv.DictWriter(output_file, ["events", "relations", "freq1", "freq2", "relSup1", "relSup2", "disprop"])
         dict_writer.writeheader()
